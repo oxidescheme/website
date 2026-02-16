@@ -1,8 +1,24 @@
 import Link from "next/link";
-import { stats } from "@/data/contributors";
-import { ports } from "@/data/ports";
+import { getOrgStats, getPorts } from "@/lib/github";
 
-export default function Home() {
+export const revalidate = 86400;
+
+interface Port {
+  id: string;
+  name: string;
+  description: string;
+  platform: string;
+  githubUrl: string;
+  stars: number;
+  lastUpdated: string;
+  homepage: string | null;
+}
+
+export default async function Home() {
+  const { totalStars, totalPorts } = await getOrgStats();
+  const ports = await getPorts();
+  const featuredPorts = ports.slice(0, 3);
+
   return (
     <main className="max-w-6xl mx-auto px-6 w-full flex flex-1 items-center">
       <div className="animate-fadeIn w-full">
@@ -26,15 +42,15 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="font-mono text-2xl text-bright-text">
-                    {stats.totalPorts}
+                    {totalPorts}
                   </div>
                   <div className="text-xs text-subtext1">Ports</div>
                 </div>
                 <div>
                   <div className="font-mono text-2xl text-bright-text">
-                    {stats.totalDownloads.toLocaleString()}
+                    {totalStars.toLocaleString()}
                   </div>
-                  <div className="text-xs text-subtext1">Downloads</div>
+                  <div className="text-xs text-subtext1">Stars</div>
                 </div>
               </div>
             </div>
@@ -42,35 +58,37 @@ export default function Home() {
         </div>
 
         {/* Featured Ports */}
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <div className="font-mono text-xs text-subtext1 uppercase tracking-wider">
-              Featured Ports
-            </div>
-            <Link
-              href="/ports"
-              className="font-mono text-xs text-blue hover:text-bright-text transition-colors"
-            >
-              View all
-            </Link>
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            {ports.slice(0, 3).map((port) => (
-              <div
-                key={port.id}
-                className="border border-subtext2 bg-surface0 p-5 hover:border-subtext1 transition-colors"
-              >
-                <h3 className="font-mono font-semibold text-bright-text text-lg mb-2">
-                  {port.name}
-                </h3>
-                <p className="text-sm text-subtext1 mb-4">{port.description}</p>
-                <div className="text-xs text-subtext1">
-                  {port.downloads.toLocaleString()} downloads
-                </div>
+        {featuredPorts.length > 0 && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div className="font-mono text-xs text-subtext1 uppercase tracking-wider">
+                Featured Ports
               </div>
-            ))}
+              <Link
+                href="/ports"
+                className="font-mono text-xs text-blue hover:text-bright-text transition-colors"
+              >
+                View all
+              </Link>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              {featuredPorts.map((port: Port) => (
+                <div
+                  key={port.id}
+                  className="border border-subtext2 bg-surface0 p-5 hover:border-subtext1 transition-colors"
+                >
+                  <h3 className="font-mono font-semibold text-bright-text text-lg mb-2">
+                    {port.name}
+                  </h3>
+                  <p className="text-sm text-subtext1 mb-4">
+                    {port.description}
+                  </p>
+                  <div className="text-xs text-subtext0">{port.platform}</div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </main>
   );

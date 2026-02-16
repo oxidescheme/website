@@ -41,7 +41,7 @@ export default function ColorsPage() {
                     className="border border-subtext2 bg-surface0 overflow-hidden hover:border-subtext1 transition-colors group text-left self-start"
                   >
                     <div
-                      className="h-20 flex items-end p-3 transition-transform duration-300 ease-out group-hover:scale-105 relative"
+                      className="h-20 flex items-end p-3 transition-all duration-200 ease-out group-hover:h-22 relative"
                       style={{ backgroundColor: color.hex }}
                     >
                       <span

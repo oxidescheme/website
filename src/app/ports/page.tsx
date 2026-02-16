@@ -1,16 +1,21 @@
-"use client";
+import { getOrgStats, getPorts } from "@/lib/github";
 
-import { useState } from "react";
-import { ports } from "@/data/ports";
+export const revalidate = 86400;
 
-export default function PortsPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+interface Port {
+  id: string;
+  name: string;
+  description: string;
+  platform: string;
+  githubUrl: string;
+  stars: number;
+  lastUpdated: string;
+  homepage: string | null;
+}
 
-  const filteredPorts = ports.filter(
-    (port) =>
-      port.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      port.description.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+export default async function PortsPage() {
+  const ports = await getPorts();
+  const { totalStars } = await getOrgStats();
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-12 flex-1 w-full">
@@ -24,32 +29,16 @@ export default function PortsPage() {
               Available implementations of the oxide colorscheme
             </p>
           </div>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search ports..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-surface0 border border-subtext2 px-4 py-2 pl-10 font-mono text-sm text-text placeholder:text-subtext1 focus:border-blue focus:outline-none w-64"
-            />
-            <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-subtext1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="square"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+          <div className="text-right">
+            <div className="font-mono text-2xl text-bright-text">
+              {totalStars.toLocaleString()}
+            </div>
+            <div className="text-xs text-subtext1">total stars</div>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          {filteredPorts.map((port) => (
+          {ports.map((port: Port) => (
             <div
               key={port.id}
               className="border border-subtext2 bg-surface0 p-6 hover:border-subtext1 transition-colors group"
@@ -66,22 +55,38 @@ export default function PortsPage() {
               <p className="text-sm text-subtext0 mb-4">{port.description}</p>
 
               <div className="flex items-center justify-between pt-4 border-t border-subtext2">
-                <span className="text-xs text-subtext1">
-                  <span className="font-mono text-subtext0">
-                    {port.downloads.toLocaleString()}
-                  </span>{" "}
-                  downloads
-                </span>
-                {port.githubUrl && (
-                  <a
-                    href={port.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue hover:text-bright-text transition-colors text-xs font-mono"
-                  >
-                    GitHub
-                  </a>
-                )}
+                <div className="flex items-center gap-4">
+                  {port.stars > 0 && (
+                    <span className="text-xs text-subtext1 flex items-center gap-1">
+                      <svg
+                        className="w-3 h-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        aria-hidden="true"
+                      >
+                        <title>star icon</title>
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="font-mono text-subtext0">
+                        {port.stars.toLocaleString()}
+                      </span>{" "}
+                      stars
+                    </span>
+                  )}
+                  {port.lastUpdated && (
+                    <span className="text-xs text-subtext1">
+                      updated {new Date(port.lastUpdated).toLocaleDateString()}
+                    </span>
+                  )}
+                </div>
+                <a
+                  href={port.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue hover:text-bright-text transition-colors text-xs font-mono"
+                >
+                  GitHub
+                </a>
               </div>
             </div>
           ))}
