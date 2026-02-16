@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Layout";
 
 export const metadata: Metadata = {
-  title: "Oxide - Where Function Meets Form",
+  title: "oxide | Where Function Meets Form",
   description: "A minimalist colorscheme ecosystem for terminals and editors",
 };
 
@@ -13,7 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased min-h-screen bg-base flex flex-col">
+        <Header />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
