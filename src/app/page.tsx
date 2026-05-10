@@ -61,12 +61,12 @@ export default async function Home() {
         {featuredPorts.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <div className="font-mono text-xs text-subtext1 uppercase tracking-wider">
+              <div className="font-mono text-xs uppercase tracking-wider">
                 Featured Ports
               </div>
               <Link
                 href="/ports"
-                className="font-mono text-xs text-blue hover:text-bright-text transition-colors"
+                className="font-mono text-xs hover:text-bright-text transition-colors"
               >
                 View all
               </Link>

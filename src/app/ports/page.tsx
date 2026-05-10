@@ -41,7 +41,7 @@ export default async function PortsPage() {
           {ports.map((port: Port) => (
             <div
               key={port.id}
-              className="border border-subtext2 bg-surface0 p-6 hover:border-subtext1 transition-colors group"
+              className="border border-subtext2 bg-surface0 rounded-md p-6 hover:border-subtext1 transition-colors group"
             >
               <div className="flex items-start justify-between mb-4">
                 <h3 className="font-mono font-semibold text-bright-text text-xl group-hover:text-blue transition-colors">
