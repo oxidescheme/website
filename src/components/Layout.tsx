@@ -8,6 +8,7 @@ export function Header({ currentPath }: HeaderProps) {
   const navItems = [
     { href: "/", label: "home" },
     { href: "/ports", label: "ports" },
+    { href: "/userstyles", label: "userstyles" },
     { href: "/colors", label: "colors" },
     { href: "/community", label: "community" },
   ];

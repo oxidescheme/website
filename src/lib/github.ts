@@ -161,6 +161,40 @@ export async function getOrgStats(): Promise<{
   }
 }
 
+export interface Userstyle {
+  slug: string;
+  name: string;
+  description: string;
+  installUrl: string;
+  sourceUrl: string;
+}
+
+export async function getUserstyles(): Promise<Userstyle[]> {
+  try {
+    const dirs = await fetchGitHub<
+      { name: string; type: string; path: string }[]
+    >(`/repos/${ORG_NAME}/userstyles/contents/styles`);
+
+    return dirs
+      .filter((d) => d.type === "dir")
+      .map((dir) => {
+        const name = dir.name
+          .replace(/[-_]/g, " ")
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+        return {
+          slug: dir.name,
+          name,
+          description: `Oxide dark theme for ${name}`,
+          installUrl: `https://github.com/oxidescheme/userstyles/raw/main/styles/${dir.name}/oxide.user.less`,
+          sourceUrl: `https://github.com/oxidescheme/userstyles/tree/main/styles/${dir.name}`,
+        };
+      });
+  } catch (error) {
+    console.error("Failed to fetch userstyles:", error);
+    return [];
+  }
+}
+
 export async function getContributors(): Promise<ContributorInfo[]> {
   try {
     const repos = await getOrgRepos();
