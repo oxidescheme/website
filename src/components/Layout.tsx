@@ -72,6 +72,14 @@ export function Footer() {
         </div>
         <div className="flex items-center gap-6">
           <a
+            href="https://github.com/sponsors/oxidescheme"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-subtext1 hover:text-bright-text transition-colors text-xs font-mono"
+          >
+            Sponsor
+          </a>
+          <a
             href="https://github.com/oxidescheme"
             className="text-subtext1 hover:text-blue transition-colors text-xs font-mono"
           >

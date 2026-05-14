@@ -1,5 +1,10 @@
+import type { Metadata } from "next";
 import { coreContributors } from "@/data/contributors";
 import { getContributors, getOrgStats } from "@/lib/github";
+
+export const metadata: Metadata = {
+  title: "community",
+};
 
 export const revalidate = 86400; // 24 hours
 

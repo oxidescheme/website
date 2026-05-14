@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { colors } from "@/data/colors";
 
 export default function ColorsPage() {
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
+
+  useEffect(() => {
+    document.title = "colors | oxide";
+  }, []);
 
   const copyToClipboard = (hex: string) => {
     navigator.clipboard.writeText(hex);

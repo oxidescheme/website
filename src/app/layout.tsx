@@ -4,7 +4,10 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Layout";
 
 export const metadata: Metadata = {
-  title: "oxide | Where Function Meets Form",
+  title: {
+    template: "%s | oxide",
+    default: "oxide",
+  },
   description: "A minimalist colorscheme ecosystem for terminals and editors",
 };
 
