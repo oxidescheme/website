@@ -6,25 +6,44 @@
   --mantle: #121212;
   --base: #161616;
   --surface0: #222222;
-  --surface1: #222222;
+  --surface1: #2e2e2e;
+  --surface2: #3a3a3a;
 
   /* Text Hierarchy */
   --bright-text: #eeeeee;
   --text: #cecece;
   --subtext0: #aeaeae;
   --subtext1: #808080;
-  --subtext2: #484848;
+  --subtext2: #555555;
 
   /* Semantic Accent Colors */
   --red: #ed756e;
   --orange: #e48233;
   --yellow: #c39900;
+  --lime: #9ca81f;
   --green: #5bb661;
   --teal: #00baaa;
   --sky: #00b3d6;
   --blue: #3ba6f5;
   --purple: #968ff7;
   --pink: #cc7bd1;
+
+  /* Bright Accent Colors */
+  --bright-red: #ff9890;
+  --bright-orange: #ffa156;
+  --bright-yellow: #e3b831;
+  --bright-lime: #bbc949;
+  --bright-green: #7bd77f;
+  --bright-teal: #00dcca;
+  --bright-sky: #00d5f9;
+  --bright-blue: #6fc6ff;
+  --bright-purple: #b5b2ff;
+  --bright-pink: #dd8be2;
+
+  /* Diff Colors */
+  --diff-delete: #452b28;
+  --diff-add: #263826;
+  --diff-change: #213546;
 }
 
 @theme inline {
@@ -32,6 +51,7 @@
   --color-base: var(--base);
   --color-surface0: var(--surface0);
   --color-surface1: var(--surface1);
+  --color-surface2: var(--surface2);
 
   --color-bright-text: var(--bright-text);
   --color-text: var(--text);
@@ -42,12 +62,28 @@
   --color-red: var(--red);
   --color-orange: var(--orange);
   --color-yellow: var(--yellow);
+  --color-lime: var(--lime);
   --color-green: var(--green);
   --color-teal: var(--teal);
   --color-sky: var(--sky);
   --color-blue: var(--blue);
   --color-purple: var(--purple);
   --color-pink: var(--pink);
+
+  --color-bright-red: var(--bright-red);
+  --color-bright-orange: var(--bright-orange);
+  --color-bright-yellow: var(--bright-yellow);
+  --color-bright-lime: var(--bright-lime);
+  --color-bright-green: var(--bright-green);
+  --color-bright-teal: var(--bright-teal);
+  --color-bright-sky: var(--bright-sky);
+  --color-bright-blue: var(--bright-blue);
+  --color-bright-purple: var(--bright-purple);
+  --color-bright-pink: var(--bright-pink);
+
+  --color-diff-delete: var(--diff-delete);
+  --color-diff-add: var(--diff-add);
+  --color-diff-change: var(--diff-change);
 
   --font-mono: "JetBrains Mono", monospace;
   --font-sans: "IBM Plex Sans", sans-serif;
