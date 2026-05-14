@@ -31,7 +31,7 @@ export const colors: Color[] = [
   },
   {
     name: "surface1",
-    hex: "#262626",
+    hex: "#222222",
     oklch: "oklch(23.5% 0 0)",
     category: "surface",
     usage: "Subtle backgrounds, cards",
@@ -39,7 +39,7 @@ export const colors: Color[] = [
   // Text Hierarchy
   {
     name: "bright_text",
-    hex: "#dedede",
+    hex: "#eeeeee",
     oklch: "oklch(90% 0 0)",
     category: "text",
     usage: "Brightest text, headings",
@@ -53,14 +53,14 @@ export const colors: Color[] = [
   },
   {
     name: "subtext0",
-    hex: "#bebebe",
+    hex: "#aeaeae",
     oklch: "oklch(78% 0 0)",
     category: "text",
     usage: "Secondary text",
   },
   {
     name: "subtext1",
-    hex: "#8f8f8f",
+    hex: "#808080",
     oklch: "oklch(62% 0 0)",
     category: "text",
     usage: "Muted text, placeholders",
