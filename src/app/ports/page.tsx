@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { PageIntro } from "@/components/PageIntro";
 import { PortsList } from "@/components/PortsList";
-import { getOrgStats, getPorts } from "@/lib/github";
+import { getPorts } from "@/lib/github";
 
 export const metadata: Metadata = {
   title: "ports",
@@ -10,59 +11,54 @@ export const revalidate = 86400;
 
 export default async function PortsPage() {
   const ports = await getPorts();
-  const { totalStars } = await getOrgStats();
+  const totalStars = ports.reduce((sum, port) => sum + port.stars, 0);
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-12 flex-1 w-full">
-      <div className="animate-fadeIn">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h2 className="font-mono text-4xl font-bold text-bright-text mb-2">
-              Ports
-            </h2>
-            <p className="text-subtext0">
-              Available implementations of the oxide colorscheme
-            </p>
-          </div>
-          <div className="text-right">
-            <div className="font-mono text-2xl text-bright-text">
-              {totalStars.toLocaleString()}
-            </div>
-            <div className="text-xs text-subtext1">total stars</div>
-          </div>
-        </div>
+    <main className="mx-auto w-full max-w-7xl flex-1 px-5 pb-24 md:px-8">
+      <PageIntro
+        label="Ecosystem / Ports"
+        title="Ports."
+        description="The same quiet palette, adapted for the tools you use every day."
+        aside={
+          <span className="font-mono text-xs text-subtext1">
+            {ports.length} available / {totalStars.toLocaleString()} stars
+          </span>
+        }
+      />
 
-        <div className="border border-subtext2 bg-surface0 rounded-md p-6 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <h3 className="font-mono text-sm text-bright-text mb-1">
-              Missing your favorite tool?
-            </h3>
-            <p className="text-sm text-subtext0">
-              Check out our open requests or create your own port using our template.
-            </p>
-          </div>
-          <div className="flex gap-3 shrink-0">
-            <a
-              href="https://github.com/oxidescheme/oxide/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono text-xs px-4 py-2 bg-surface1 border border-subtext2 text-bright-text hover:border-subtext1 hover:bg-surface2 transition-colors rounded-md"
-            >
-              View Requests
-            </a>
-            <a
-              href="https://github.com/oxidescheme/template"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono text-xs px-4 py-2 bg-base border border-subtext2 text-subtext0 hover:border-subtext1 hover:text-bright-text transition-colors rounded-md"
-            >
-              Use Template
-            </a>
-          </div>
-        </div>
-
+      <section className="pt-10" aria-label="Available ports">
         <PortsList initialPorts={ports} />
-      </div>
+      </section>
+
+      <section className="mt-20 grid gap-6 border-t border-surface2 pt-8 md:grid-cols-[1fr_auto] md:items-start">
+        <div>
+          <p className="eyebrow mb-3">Contribute</p>
+          <h2 className="text-2xl font-medium tracking-[-0.03em] text-bright-text">
+            Missing your tool?
+          </h2>
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-subtext0">
+            See the open requests, or start a new port from the template.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <a
+            href="https://github.com/oxidescheme/oxide/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-sm border border-surface2 px-4 py-2.5 font-mono text-xs text-bright-text transition-colors hover:bg-surface0"
+          >
+            View requests ↗
+          </a>
+          <a
+            href="https://github.com/oxidescheme/template"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-sm border border-surface2 px-4 py-2.5 font-mono text-xs text-bright-text transition-colors hover:bg-surface0"
+          >
+            Use template ↗
+          </a>
+        </div>
+      </section>
     </main>
   );
 }

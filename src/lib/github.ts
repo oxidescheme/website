@@ -12,13 +12,6 @@ interface GitHubRepo {
   homepage: string | null;
 }
 
-interface GitHubContributor {
-  login: string;
-  avatar_url: string;
-  html_url: string;
-  contributions: number;
-}
-
 export interface Port {
   id: string;
   name: string;
@@ -28,15 +21,6 @@ export interface Port {
   stars: number;
   lastUpdated: string;
   homepage: string | null;
-}
-
-interface ContributorInfo {
-  login: string;
-  name: string;
-  avatarUrl: string;
-  githubUrl: string;
-  contributions: number;
-  repos: string[];
 }
 
 async function fetchGitHub<T>(endpoint: string): Promise<T> {
@@ -144,23 +128,6 @@ export async function getPorts(): Promise<Port[]> {
   }
 }
 
-export async function getOrgStats(): Promise<{
-  totalStars: number;
-  totalPorts: number;
-}> {
-  try {
-    const ports = await getPorts();
-    const totalStars = ports.reduce((sum, port) => sum + port.stars, 0);
-    return {
-      totalStars,
-      totalPorts: ports.length,
-    };
-  } catch (error) {
-    console.error("Failed to fetch org stats:", error);
-    return { totalStars: 0, totalPorts: 0 };
-  }
-}
-
 export interface Userstyle {
   slug: string;
   name: string;
@@ -191,50 +158,6 @@ export async function getUserstyles(): Promise<Userstyle[]> {
       });
   } catch (error) {
     console.error("Failed to fetch userstyles:", error);
-    return [];
-  }
-}
-
-export async function getContributors(): Promise<ContributorInfo[]> {
-  try {
-    const repos = await getOrgRepos();
-    const contributorMap = new Map<string, ContributorInfo>();
-
-    for (const repo of repos) {
-      try {
-        const repoContributors = await fetchGitHub<GitHubContributor[]>(
-          `/repos/${ORG_NAME}/${repo.name}/contributors?per_page=100`,
-        );
-
-        for (const contributor of repoContributors) {
-          const existing = contributorMap.get(contributor.login);
-
-          if (existing) {
-            existing.contributions += contributor.contributions;
-            if (!existing.repos.includes(repo.name)) {
-              existing.repos.push(repo.name);
-            }
-          } else {
-            contributorMap.set(contributor.login, {
-              login: contributor.login,
-              name: contributor.login,
-              avatarUrl: contributor.avatar_url,
-              githubUrl: contributor.html_url,
-              contributions: contributor.contributions,
-              repos: [repo.name],
-            });
-          }
-        }
-      } catch (error) {
-        console.warn(`Failed to fetch contributors for ${repo.name}:`, error);
-      }
-    }
-
-    return Array.from(contributorMap.values()).sort(
-      (a, b) => b.contributions - a.contributions,
-    );
-  } catch (error) {
-    console.error("Failed to fetch contributors:", error);
     return [];
   }
 }

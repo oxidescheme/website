@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageIntro } from "@/components/PageIntro";
 import { UserstylesList } from "@/components/UserstylesList";
 import { getUserstyles } from "@/lib/github";
 
@@ -12,69 +13,67 @@ export default async function UserstylesPage() {
   const userstyles = await getUserstyles();
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-12 flex-1 w-full">
-      <div className="animate-fadeIn">
-        <div className="mb-8">
-          <h2 className="font-mono text-4xl font-bold text-bright-text mb-2">
-            Userstyles
-          </h2>
-          <p className="text-subtext0">
-            Oxide dark theme for your favorite websites
-          </p>
-        </div>
+    <main className="mx-auto w-full max-w-7xl flex-1 px-5 pb-24 md:px-8">
+      <PageIntro
+        label="Ecosystem / Web"
+        title="Userstyles."
+        description="The oxide palette for the websites you use alongside your editor."
+        aside={
+          <span className="font-mono text-xs text-subtext1">
+            {userstyles.length} available
+          </span>
+        }
+      />
 
-        <div className="border border-subtext2 bg-surface0 rounded-md p-6 mb-8">
-          <h3 className="font-mono text-sm text-bright-text mb-2">
-            Installation
-          </h3>
-          <p className="text-sm text-subtext0 mb-4">
+      <section className="grid gap-6 border-b border-surface2 py-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+        <div>
+          <p className="eyebrow mb-3">Installation</p>
+          <p className="max-w-2xl text-sm leading-relaxed text-subtext0">
             Install the{" "}
             <a
               href="https://github.com/openstyles/stylus"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-bright-text underline underline-offset-2 hover:text-white transition-colors"
+              className="text-bright-text underline underline-offset-4"
             >
-              Stylus
-            </a>{" "}
-            browser extension, then import all userstyles at once or install
-            individually.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div className="flex flex-wrap gap-3">
-              <a
-                href="https://github.com/oxidescheme/userstyles/raw/main/dist/import.json"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-mono text-xs px-4 py-2 bg-surface1 border border-subtext2 text-bright-text hover:border-subtext1 hover:bg-surface2 transition-colors rounded-md"
-              >
-                Import All (import.json)
-              </a>
-              <a
-                href="https://github.com/oxidescheme/userstyles"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-mono text-xs px-4 py-2 bg-base border border-subtext2 text-subtext0 hover:border-subtext1 hover:text-bright-text transition-colors rounded-md"
-              >
-                View Source
-              </a>
-            </div>
-            
-            <a
-              href="https://github.com/oxidescheme/userstyles/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono text-xs text-subtext1 hover:text-bright-text transition-colors flex items-center gap-2"
-            >
-              Missing a website?
-              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
+              Stylus extension
             </a>
-          </div>
+            , then import the collection or choose individual styles below.
+          </p>
         </div>
+        <div className="flex flex-wrap gap-3">
+          <a
+            href="https://github.com/oxidescheme/userstyles/raw/main/dist/import.json"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-sm bg-bright-text px-4 py-2.5 font-mono text-xs text-mantle transition-colors hover:bg-text"
+          >
+            Import all ↗
+          </a>
+          <a
+            href="https://github.com/oxidescheme/userstyles"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-sm border border-surface2 px-4 py-2.5 font-mono text-xs text-bright-text transition-colors hover:bg-surface0"
+          >
+            View source ↗
+          </a>
+        </div>
+      </section>
 
+      <section className="pt-10" aria-label="Available userstyles">
         <UserstylesList initialStyles={userstyles} />
+      </section>
+
+      <div className="mt-16 border-t border-surface2 pt-6">
+        <a
+          href="https://github.com/oxidescheme/userstyles/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-xs text-subtext0 transition-colors hover:text-bright-text"
+        >
+          Missing a website? See open requests ↗
+        </a>
       </div>
     </main>
   );

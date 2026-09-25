@@ -1,159 +1,135 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Port } from "@/lib/github";
 
 interface PortsListProps {
   initialPorts: Port[];
 }
 
+type PortSort = "stars" | "name" | "recent";
+
 export function PortsList({ initialPorts }: PortsListProps) {
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<"stars" | "name" | "recent">("stars");
-  const [platform, setPlatform] = useState<string>("all");
+  const [sort, setSort] = useState<PortSort>("stars");
+  const [platform, setPlatform] = useState("all");
 
-  const platforms = useMemo(() => {
-    const set = new Set(initialPorts.map((p) => p.platform));
-    return ["all", ...Array.from(set).sort()];
-  }, [initialPorts]);
+  const platforms = useMemo(
+    () => ["all", ...new Set(initialPorts.map((port) => port.platform))].sort(),
+    [initialPorts],
+  );
 
-  const filteredAndSortedPorts = useMemo(() => {
-    let result = [...initialPorts];
+  const visiblePorts = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    const matching = initialPorts.filter(
+      (port) =>
+        (platform === "all" || port.platform === platform) &&
+        (!query ||
+          port.name.toLowerCase().includes(query) ||
+          port.description.toLowerCase().includes(query)),
+    );
 
-    // Filter by platform
-    if (platform !== "all") {
-      result = result.filter((p) => p.platform === platform);
-    }
-
-    // Search
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q),
-      );
-    }
-
-    // Sort
-    result.sort((a, b) => {
-      if (sort === "stars") {
-        return b.stars - a.stars;
-      }
-      if (sort === "name") {
-        return a.name.localeCompare(b.name);
-      }
+    return matching.sort((a, b) => {
+      if (sort === "name") return a.name.localeCompare(b.name);
       if (sort === "recent") {
         return (
           new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
         );
       }
-      return 0;
+      return b.stars - a.stars;
     });
-
-    return result;
-  }, [initialPorts, search, sort, platform]);
+  }, [initialPorts, platform, search, sort]);
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row gap-4 mb-8">
+      <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_auto]">
+        <label className="sr-only" htmlFor="port-search">
+          Search ports
+        </label>
         <input
-          type="text"
-          placeholder="Search ports..."
+          id="port-search"
+          type="search"
+          placeholder="Search ports"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 bg-surface0 border border-subtext2 rounded-md px-4 py-2 text-bright-text focus:outline-none focus:border-blue transition-colors font-mono text-sm"
+          onChange={(event) => setSearch(event.target.value)}
+          className="min-w-0 rounded-sm border border-surface2 bg-surface0 px-4 py-3 text-sm text-bright-text placeholder:text-subtext1"
         />
+        <label className="sr-only" htmlFor="port-platform">
+          Filter by platform
+        </label>
         <select
+          id="port-platform"
           value={platform}
-          onChange={(e) => setPlatform(e.target.value)}
-          className="bg-surface0 border border-subtext2 rounded-md px-4 py-2 text-bright-text focus:outline-none focus:border-blue transition-colors font-mono text-sm"
+          onChange={(event) => setPlatform(event.target.value)}
+          className="rounded-sm border border-surface2 bg-surface0 px-4 py-3 font-mono text-xs text-bright-text"
         >
-          {platforms.map((p) => (
-            <option key={p} value={p}>
-              {p === "all" ? "All Platforms" : p}
+          {platforms.map((item) => (
+            <option key={item} value={item}>
+              {item === "all" ? "All platforms" : item}
             </option>
           ))}
         </select>
+        <label className="sr-only" htmlFor="port-sort">
+          Sort ports
+        </label>
         <select
+          id="port-sort"
           value={sort}
-          onChange={(e) => setSort(e.target.value as any)}
-          className="bg-surface0 border border-subtext2 rounded-md px-4 py-2 text-bright-text focus:outline-none focus:border-blue transition-colors font-mono text-sm"
+          onChange={(event) => {
+            const value = event.target.value;
+            if (value === "stars" || value === "name" || value === "recent") {
+              setSort(value);
+            }
+          }}
+          className="rounded-sm border border-surface2 bg-surface0 px-4 py-3 font-mono text-xs text-bright-text"
         >
-          <option value="stars">Most Stars</option>
-          <option value="name">Name (A-Z)</option>
-          <option value="recent">Recently Updated</option>
+          <option value="stars">Most stars</option>
+          <option value="name">Name A–Z</option>
+          <option value="recent">Recently updated</option>
         </select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {filteredAndSortedPorts.map((port: Port) => (
-          <div
+      <p
+        className="mb-4 mt-8 font-mono text-[11px] text-subtext1"
+        aria-live="polite"
+      >
+        {visiblePorts.length} {visiblePorts.length === 1 ? "port" : "ports"}
+      </p>
+      <div className="border-t border-surface2">
+        {visiblePorts.map((port) => (
+          <a
             key={port.id}
-            className="relative group p-4 border border-subtext2 bg-surface0 rounded-md hover:border-subtext1 transition-colors flex items-center justify-between gap-4"
+            href={port.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group grid gap-3 border-b border-surface2 py-6 transition-colors hover:bg-surface0/50 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_auto] md:items-center md:gap-8 md:px-3"
           >
-            <div className="flex items-center gap-3 overflow-hidden">
-              <a
-                href={port.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-mono font-semibold text-bright-text text-base sm:text-lg transition-colors after:absolute after:inset-0 truncate"
-              >
-                {port.name}
-              </a>
-              <span className="font-mono text-[10px] text-subtext1 px-1.5 py-0.5 border border-subtext2 rounded-sm uppercase shrink-0">
+            <div>
+              <h2 className="text-xl font-medium text-bright-text">
+                {port.name}{" "}
+                <span className="text-subtext1 group-hover:text-bright-text">
+                  ↗
+                </span>
+              </h2>
+              <span className="mt-1 block font-mono text-[11px] text-subtext1">
                 {port.platform}
               </span>
             </div>
-
-            <div className="flex items-center gap-4 shrink-0">
-              {port.lastUpdated && (
-                <span className="text-xs text-subtext1 hidden sm:block">
-                  {new Date(port.lastUpdated).toLocaleDateString(undefined, {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
-              )}
-              {port.stars > 0 && (
-                <span className="text-xs text-subtext0 flex items-center gap-1">
-                  <svg
-                    className="w-3 h-3 text-subtext1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    aria-hidden="true"
-                  >
-                    <title>star icon</title>
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  <span className="font-mono">{port.stars.toLocaleString()}</span>
-                </span>
-              )}
-              <svg
-                className="w-4 h-4 text-subtext2 group-hover:text-bright-text transition-colors"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="7" y1="17" x2="17" y2="7"></line>
-                <polyline points="7 7 17 7 17 17"></polyline>
-              </svg>
-            </div>
-          </div>
+            <p className="text-sm leading-relaxed text-subtext0">
+              {port.description}
+            </p>
+            <span className="font-mono text-xs text-subtext1">
+              {port.stars.toLocaleString()} stars
+            </span>
+          </a>
         ))}
       </div>
-
-      {filteredAndSortedPorts.length === 0 && (
-        <div className="text-center py-12 border border-subtext2 border-dashed rounded-md mt-4">
-          <p className="text-subtext1 font-mono text-sm">
-            No ports found matching your criteria.
-          </p>
-        </div>
+      {visiblePorts.length === 0 && (
+        <p className="border-b border-surface2 py-12 text-sm text-subtext0">
+          {initialPorts.length === 0
+            ? "Ports are unavailable right now. Browse the oxide projects on GitHub."
+            : "No ports match those filters."}
+        </p>
       )}
     </div>
   );

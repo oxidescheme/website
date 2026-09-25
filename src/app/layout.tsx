@@ -4,11 +4,12 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Layout";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://oxidescheme.vercel.app"),
   title: {
     template: "%s | oxide",
     default: "oxide",
   },
-  description: "A minimalist colorscheme ecosystem for terminals and editors",
+  description: "A dark-only colorscheme for editors, terminals, and the web.",
 };
 
 export default function RootLayout({
@@ -18,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased min-h-screen bg-base flex flex-col">
+      <body className="antialiased min-h-screen flex flex-col">
         <Header />
         {children}
         <Footer />

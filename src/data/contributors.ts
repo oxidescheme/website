@@ -5,7 +5,6 @@ export interface Contributor {
   role: string;
   avatarUrl: string;
   githubUrl: string;
-  contributions: string[];
 }
 
 export const coreContributors: Contributor[] = [
@@ -16,6 +15,5 @@ export const coreContributors: Contributor[] = [
     role: "Creator & Maintainer",
     avatarUrl: "https://github.com/jakmaz.png",
     githubUrl: "https://github.com/jakmaz",
-    contributions: ["oxide.nvim", "vscode", "ghostty", "oxide-core"],
   },
 ];

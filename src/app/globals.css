@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -86,51 +86,37 @@
   --color-diff-change: var(--diff-change);
 
   --font-mono: "JetBrains Mono", monospace;
-  --font-sans: "IBM Plex Sans", sans-serif;
+  --font-sans: "Geist", sans-serif;
 }
 
-* {
-  border-radius: 5;
+html {
+  color-scheme: dark;
 }
 
 body {
   background: var(--base);
   color: var(--text);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--yellow);
-  color: var(--mantle);
+  background: var(--surface1);
+  color: var(--bright-text);
 }
 
-/* Scrollbar styling - hidden */
-::-webkit-scrollbar {
-  display: none;
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--bright-text);
+  outline-offset: 3px;
 }
 
-/* For Firefox */
-html {
-  scrollbar-width: none;
-}
-
-/* Ensure scrolling still works */
-* {
-  -ms-overflow-style: none;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-out;
+.eyebrow {
+  color: var(--subtext1);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
